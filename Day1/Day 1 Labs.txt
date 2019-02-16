@@ -1,0 +1,390 @@
+Docker Installation:
+-- Please Check BIOS Setup or in Task Manager Performance to see Virtualization Enabled.
+-- Ensure One Browser is Enabled.
+-- Create A Docker Hub Account (Free Account) - Login and Password (Sign up)
+-- GIT Hub Account (Optional)
+-- Install Docker ToolBox Legacy https://docs.docker.com/toolbox/overview/#whats-in-the-box
+----- Check for Kitematic, Docker Quick Start Terminal , Oracle VM Created.
+
+Labs:1 
+Docker CLI (Docker Client CLI)
+Run command option in Docker - Pulls the container and then runs the application.
+
+1. docker search hello-world
+ Search hello-world image 
+
+2. docker run hello-world
+
+Docker pulls the image locally and checks pulls it from DockerHub , creates and image and check for existence.
+Lets see the following:
+3.Docker container ls
+(Any Containers crated) ?
+
+4.Docker image ls
+What do you see Images - Image ID , Name of Image (?) , Image Tag, Repository and Image Size
+
+5.Docker ps -a
+Look for status . Ports and Command 
+
+6.Docker ps -l
+What is difference between 4 and 5.
+
+7.Docker search ubuntu
+Search for ubuntu image in Docker 
+
+8.docker search -s 1000 ubuntu
+Search for higher stars rating to get the right image 
+
+9.docker search --no-trunc -s 1000 ubuntu
+Truncated wihout content.
+
+10. docker search --no-trunc --limit 10 ubuntu
+Searches for first 10 searches for ubuntu
+
+11. docker run --name myubun ubuntu /bin/bash
+Lets Execute the image Ubuntu in our system. 
+ 
+12.  docker run -it ubuntu /bin/bash
+Check for Process status after exiting root.
+
+13.
+docker run -dit --name ubun1 ubuntu /bin/bash 
+docker exec -it myubun /bin/bash 
+Execute commands in the Container myubun, To First execute , you should see the container in the "Up"
+
+14. Check for a running container
+docker ps -a (check for status) or docker container ls
+docker start container_id 
+docker exec myubun ls
+(Are you in shell yet ?)
+To ensure you are in container - use -it 
+docker exec -it myubun bash
+
+15.To check for client and Server version
+docker version
+
+16. Get list of Images
+docker image ls
+(Look for Tag and Size)
+
+17. To Access an image , you need a container.
+Docker inspect <image id>
+Docker container myubun
+what are differences you see between the JSONS ?
+
+18.docker info
+Get Info on docker
+
+19.docker stats
+Get Real time statistics Information on docker 
+
+20.docker rmi <image id>
+To remove an image from Docker
+
+21. docker container prune
+This command removes all stopped containers.
+
+22. docker network ls
+This provides list of networks availabile within container. Default Network Drive is bridge.
+
+23. docker run -dit --name mycont alpine sh
+This pulls Alpine environment 
+-d : run a dameon thread (check with docker ps -a)
+
+24. docker exec -it myalp sh
+Opens the shell environment as alpine environment
+
+25. docker exec myalp ifconfig
+Checks the IP address of the container.
+
+26. First Remember your credentials in DockerHub
+docker login -u <<username>>
+-- provide your password , Login will succeed.
+
+Now lets push Hello-world container into your DockerHub.
+Find the image ID of hello-world in Docker image ls
+docker tag <<image ID>> <<dockerhubusername>>/hello-world:<<Your comment>>
+docker tag ffjjjjjjj dnarasim248/hello-world:FirstPush2DockerDJ
+docker push <<dockerhubusername>>/hello-world
+
+27. docker rmi -f <imageid>
+Remove the image. (Force removal -f)
+
+28. List of VM boxes running
+docker-machine ls
+
+29. docker-machine url
+30.docker-machine status
+
+31. docker-machine ip
+
+32. docker-machine create -d virtualbox newdj
+This creates a new VM machine within the system. It copies Boot2locker.iso from default bootlocker available. 
+
+33.docker-machine ls 
+list the machines listed along with new machine created in Line 32.
+
+34.Pull the Posted Image in your Login Hubber
+docker pull <<yourhubuser>>/hello-world:<<your tag name>>
+docker pull dnarasim248/hello-world:FirstEntry
+ 
+35. Confirm images created
+docker image ls
+
+36. Create a container with pulled hello-world
+docker run -it --name mycont <<Image ID of docker image ls>>
+docker ps-a | grep mycont (check for container created with name=mycont)
+
+
+
+36.
+Create in specific Format as per the ask
+docker ps -a --format "{{.ID}} {{.Image}}"
+docker ps -a --format "{{.ID}} {{.Image}} {{.Command}}"
+
+Get exact creation date of the Container
+docker inspect -f "{{ .Created }}" mybuntu
+
+docker inspect -f "{{.Created}} -- {{.HostConfig.CpuShares}} -- {{.State.Pid}} -- {{.NetworkSettings.IPAddress}}"  <<name of container>>
+
+37. 
+DockerFile Creation
+Step 1
+Create a Directory under the DockerToolBox - DCKEG1
+CD DCKEG1
+
+Step 2
+Notepad DockerFile
+
+ARG CODE_VERSION=latest
+FROM ubuntu:$CODE_VERSION
+MAINTAINER DHANANJAYAN
+ENV descpn="This is new version"
+RUN ["/bin/bash","-c","echo $descpn"]
+CMD echo $descpn |wc -c
+
+Step 3
+docker build -t myDockCnt -f Dockerfile.txt .
+Copy the Image created at last 
+(Note the layers being created)
+
+Step 4 
+docker ps -a
+docker image ls
+[Paste the Image ID or store the Image ID of docker image ls]
+
+Step 5
+docker run <<image id>> 
+
+38. Registry Creation
+
+Step 1 
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+--Port 5000, Name of registry , Always active for Connection, Newer Image of Registry
+
+Step 2
+--Pull latest image
+docker pull ubuntu
+--Confirm creation
+docker image ls
+
+Step 3
+--Push ubuntu into registry
+docker tag ubuntu localhost:5000/ubuntu:tag2ubuntu2registry
+---(Tags should be in lowercase , so are repositories)
+docker push localhost:5000/ubuntu:tag2ubuntu2registry
+
+Step 4
+--Lets Remove Image from Local Disk
+docker image remove ubuntu
+docker image remove localhost:5000/ubuntu/tag2ubuntu2registry
+
+Step 5
+docker pull localhost:5000/ubuntu:tag2ubuntu2registry
+-- The Local Registry (UDF) still serves your DML Softwares across your distribution.
+
+39.
+docker inspect registry
+The Restart policy , STate and Args created are different.
+
+40. 
+Stop and remove registry
+docker container stop registry
+docker rm -v registry
+
+--Image of registry still exist - Force removal is required to remove 
+
+
+41.
+Example on copy on Write Strategy
+
+Step 1
+=====
+Create a directory cow-new
+cd cow-new
+
+Step 2
+======
+cat > hello.sh
+#! /bin/sh
+echo "Hello from Shell from COWSTR"
+
+Save and close file.
+
+chmod +x hello.sh
+
+Step 3
+======
+--notepad Dockerfile.base
+
+FROM ubuntu:16.04
+COPY . /app
+
+Step 4
+======
+docker build -t acme/myimg1.0  -f Dockerfile.base .
+
+Step 5
+======
+notepad Dockerfile
+FROM acme/myimg1.0 
+RUN ["/bin/bash","-c", "echo from DCK Second Layer"]
+
+Step 6
+======
+docker build -t acme/mynewimg1.0 -f Dockerfile .
+
+Step 7
+=========
+notepad Dockerfile1
+FROM acme/mynewimg1.0
+CMD /app/hello.sh
+
+docker build -t acme/mynewimg2.0 -f Dockerfile1 . 
+
+docker ps -a 
+docker image ls
+docker history <<image id>>
+--inspect image and sizes
+
+
+
+Step 7
+======
+-- remove images
+
+44.
+Create a directory - 
+
+Notepad dockerfile1
+===============
+FROM oraclelinux:6 as build1
+COPY a.sh /usr/app/
+
+FROM java:8
+COPY --from=build1 /usr/app/ /app/
+CMD sh /app/a.sh
+
+docker build -t newimg -f dockerfile1 .
+docker run newimg
+
+44. Environment Variables
+==========================
+docker run -it -e client=ORA-DOM1  -e IP=$(docker-machine ip) ubuntu /bin/bash
+# echo $client
+# echo $IP
+
+45. Environment files
+=====================
+create envfile.txt
+client=ORA-DOM1
+Location=HYD
+
+docker run -it --env-file envfile.txt --name envcnteg ubuntu /bin/bash
+# echo $client 
+# echo $Location
+
+docker run -it --env-file envfile.txt -e uname=$(whoami) --name envcnteg1 ubuntu /bin/bash
+# echo $client
+# echo $location
+# echo $uname
+
+46. ENTRY POINT usage
+=========================
+docker run -it --entrypoint =/bin/ls ubuntu
+docker run -it --entrypoint =/bin/ls ubuntu -l /bin
+-- Did you observe - are you in shell ?
+
+47. ENTRY POINT in Docker file
+
+Step 1
+=====
+Create a directory - entpointeg
+cd entpointeg
+
+Step 2
+======
+--notepad Dockerfile
+FROM ubuntu:latest
+ENTRYPOINT ["top","-b"]
+CMD ["-c"]
+
+Step 3
+=====
+docker build -t newImg .
+docker run -it newImg 
+--(Observe the Output - Are you getting Process ID along with Threads) - How CMD and ENTRYPOINT acts together. 
+
+
+48.
+Optional only if you have knowledge of Java Applications.
+
+mkdir javaex
+cd javaex
+
+Step 1
+=======
+Notepad HelloWorld.java
+========================
+
+package javaex;
+public class HelloWorld 
+{
+public static void main (String[] args){
+System.out.println("Hello world :)");
+}
+}
+
+javac -d . HelloWorld.java
+
+Step 2
+=====
+When packaging the .jar file, you need to instruct the jar routine on how to pack it. Here we use the option set cvfeP. This is to keep the package structure (option P), specify the entry point so that the manifest file contains meaningful information (option e). 
+
+And then comes -C . <packagename>/ to get the class files from that folder, preserving the folder structure.
+
+jar cvfeP HelloWorld.jar javaex.HelloWorld -C . javaex/
+
+Step 3
+
+Test jar file
+java -jar HelloWorld.jar
+
+Step 4
+notepad Dockerfile
+
+FROM java:8
+WORKDIR /
+ADD HelloWorld.jar HelloWorld.jar
+EXPOSE 8080
+CMD java -jar HelloWorld.jar
+CMD ["/bin/bash","-c","echo this is from JVM"]
+
+
+Step 5
+docker build -t helloworldimg -f Dockerfile.txt .
+
+Step 6
+docker run -it helloworldimg bash
+
+

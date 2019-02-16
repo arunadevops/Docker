@@ -1,0 +1,203 @@
+Recap-Day 1 - List of Docker commands. 
+-----------
+
+**Docker Commands. 
+
+docker version        --> Display the Docker deamon , client version. 
+docker help           --> Docker help and manual. 
+
+**Image Specific commands. 
+
+docker images         --> list all the images 
+docker images -a      --> List all the intermediate containers as well. 
+docker images -q      --> List only the image ids(used when you want to automate)
+
+
+-------------------------------------------------------------------------------------------
+
+
+** Container Sepcific commands 
+
+docker ps            --> list the active running containers. 
+docker ps -a         --> list the active + inactive containers(Exited containers). 
+docker ps -as        --> List container and also list sizes of containers. 
+
+--------------------------------------------------------------------------------------------
+
+docker search <imagename>  --> will search the image
+docker pull <image>:<tag>  --> it will pull the image for the spefic tag 
+  example:- docker pull centos:6  (to find out tags, check developper or browse repo readme. )
+
+
+---------------------------------------------------------------------------------------------
+
+container modes - detached mode and root mode. 
+
+detached mode   
+          ex:- docker run -itd ubuntu:xenial
+          i - interactive
+          t - terminal
+          d - detached mode.       
+root mode 
+          ex:- docker run it ubuntu:xenial 
+
+
+**run 
+
+docker run -i <image-name>     --> allow you to get into the container. 
+docker run -t <image-name>     --> calls a terminal from inside the container. this prevents the container from exiting. 
+docker run -it <image-name>    --> allows docker for interactive and terminal access and prevent from exiting. 
+docker run -d <image-name>     --> allows to run the service in the background mode. 
+docker run -d -name=edureka-container hello-world:latest --> container would be named as edureka container. 
+
+**exec 
+docker exec -it <container-id>.  --> login to the Running container with interactive Mode. 
+
+**attach 
+docker attach <container-id> --> will allowing stdout and stdin on to a ditached container. 
+
+docker run -d --name test_ubuntu ubuntu /usr/bin/top -b.  [creates container in a detached mode]
+docker attach <container-id> 
+
+
+**stop 
+docker stop <container-id>     --> stop the container , when the container is stopped, the ip of the container is not retained, it can change when you start the container again. 
+docker start <container-id>    --> start the container. 
+docker pause <container-id>    --> pause the container, when the container is paused , ip of the container is retained, when you start you get the same ip. 
+
+
+**inspect 
+docker inspect <object-id> -- output the value in json. 
+
+objects are images, containers, networks, machines, volumes, etc. 
+
+
+**remove an image 
+
+docker rmi <image-name>           --> remove the image if no containers are associated with the image. 
+docker rmi -f <image-name>        --> remove the image and also associated containers are killed. 
+       --- when to use -f option :- when you think the design of image is incorrect then you can run this. 
+
+
+**removing an container. 
+
+docker rm <container-id>          --> it will remove the stop or exited containers only. 
+docker rm -f <container-id>       --> it will force remove or kill the running container. 
+
+
+*** SHaring Host data with containers. 
+
+ docker run -it -v "$PWD":<source-path> image <path> 
+
+
+** copy files from containers to local machine and local machine to container. 
+
+ docker cp 
+
+ Usage:  docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+        docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+
+
+
+** docker commit -- commiting the changes in the container. 
+
+docker commit <container-id> 
+
+** docker diff -- list the differences that happenned after 1 or several commit. 
+
+docker diff <container-id> 
+
+example:- 
+		docker run -it ubuntu bash 
+		-- apt-get update 
+		docker commit <container-id>
+		docker diff <container-id> 
+		
+
+**sharing containers. 
+docker export --> export stopped containers 
+docker import --> import 
+
+		usage:- 
+		docker export <container-id> > <file-name>.tar 
+		docker import <continer-name> > <file-name>.tar 
+
+**Sharing images 
+
+docker save  --> save the image in the tar 
+docker load  --> load the saved image 
+
+       usage 
+       docker save -o <file-name>.tar <image>:<tag>
+       docker load < <file-name>.tar 
+
+**Pushing the images to Hub. 
+
+**issues - ubuntu  
+ufw disable
+Firewall stopped and disabled on system startup
+vi /etc/resolve.conf 
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+
+docker login 
+docker push <image> 
+
+docker tag 
+
+       usage:- 
+         docker tag ubuntu app1:19.0
+         docker tag app1:19.0 app1:19.1 
+
+root@osboxes:~/labs# docker push app1:19.0
+The push refers to repository [docker.io/library/app1]
+4b7d93055d87: Preparing 
+663e8522d78b: Preparing 
+283fb404ea94: Preparing 
+bebe7ce6215a: Preparing 
+denied: requested access to the resource is denied
+root@osboxes:~/labs# docker tag ubuntu phanikishorelanka/app1:19.0
+root@osboxes:~/labs# docker push phanikishorelanka/app1:19.0
+The push refers to repository [docker.io/phanikishorelanka/app1]
+4b7d93055d87: Pushed 
+663e8522d78b: Pushed 
+283fb404ea94: Pushed 
+bebe7ce6215a: Pushing [==================================================>]  90.62MB
+
+
+
+ **Private Docker Registry 
+
+
+ 
+ docker pull registry:2
+ docker run -d -p 5000:5000 registry:2
+ curl -i http://localhost:5000/
+
+
+
+ docker tag ubuntu localhost:5000/ubuntu
+ docker push localhost:5000/ubuntu
+ 
+
+
+
+
+
+
+**sample output 
+
+docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: phanikishorelanka
+Password: 
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
+
+
+

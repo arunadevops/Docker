@@ -1,0 +1,128 @@
+Day 2 
+------
+################ MODULE 2 Containers ########################## 
+
+Base Image - Reference and basic image built , on top of this layers can be built. 
+
+Example Docker layers. 
+
+test case :- building a tomcat [ os + jdk + tomcat + war file]
+        image into 4 layers. 
+
+image-1 --> only os image 
+image-2 --> image-1 + jdk 
+image-3 --> image-2 + tomcat
+image-4 --> image-3 + war file1,2,3..
+
+
+** Important files for bulding image
+---------------
+Dockerfile --> list of docker image 
+.dockerignore --> this file is called before building the docker image, all the pattens in this file are ignored during docker Build. 
+
+---------------
+
+docker file builder --> https://docs.docker.com/engine/reference/builder/
+
+Build your docker file 
+    docker build -t <image-name>:<tag> .                            --> Build the docker but will look for Dockerfile 
+    docker build -t <image-name>:<tag> -f <dockerfile-name>         --> Build the Docker it will look for dockerfilename which you give with -f 
+    docker build -q -t <image-name>:<tag>  .                        --> build the docker image 
+
+
+Docker file commands 
+
+1. FROM --> The base image for building a new image. This command must be on top of the dockerfile.
+2. MAINTAINER --> Optional, it contains the name of the maintainer of the image.
+3. RUN --> Used to execute a command during the build process of the docker image.
+4. ADD --> Copy a file from the host machine to the new docker image. There is an option to use an URL for the file, docker will then download that file to the destination directory.
+COPY --> copy will be from local machine to a image not the url. 
+5. ARG --> this is a environment variable used only for building the docker image, but it is not used outside the image. 
+6. ENV --> Define an environment variable. (example--> ORACLE_HOME,JAVA_HOME,MDLW_HOME, JBOSS_HOME, CATALINA_HOME etc) 
+7. CMD --> Used for executing commands when we build a new container from the docker image.
+8. ENTRYPOINT --> Define the default command that will be executed when the container is running.
+9. WORKDIR --> This is directive for CMD command to be executed.
+10. USER --> Set the user or UID for the container created with the image.
+11. VOLUME --> Enable access/linked directory between the container and the host machine.
+
+
+**important interview questions 
+
+
+diff b/w copy and add 
+
+diff b/w CMD & ENTRYPOINT. 
+CMD --> overriden
+ENTRYPOINT --> NOT OVERRIDEN, these are appended. 
+
+--CMD 
+FROM ubuntu
+CMD echo 'welcome to ubuntu'
+CMD echo 'welcome to Docker'
+
+docker build -t app:1.0 .
+docker run -it <cont-id> 
+
+
+**** Docker Registry Related Commands. 
+
+docker pull registry:2 
+docker run -d -p 5000:5000 registry:2
+
+
+
+
+############# MODULE 3 ############### 
+
+Docker Compose & Docker swarm. 
+
+**installing Docker Compose. 
+
+apt update 
+apt install python 
+apt install python-pip
+
+Docker-compose.yaml file 
+
+wordpress:
+     image: wordpress
+     links:
+       - wordpress_db:mysql
+      ports:
+       - "8080:80"
+
+wordpress_db
+ image: mariadb
+ environment: 
+  MYSQL_ROOT_PASSWORD: edureka 
+phpmyadmin:
+ image: corbinu/docker-phpmyadmin
+ links:
+ - wordpress_db:mysql
+ ports:
+ - 8181:80
+ environment: 
+  MYSQL_USERNAME: root
+  MYSQL_ROOT_PASSWORD: edureka 
+
+
+
+
+
+***Docker UI 
+
+docker pull uifd/ui-for-docker
+docker run -d -p 9000:9000 --privileged -v /var/run/docker.sock:/var/run/docker.sock uifd/ui-for-docker
+
+root@osboxes:~# docker pull uifd/ui-for-docker
+Using default tag: latest
+latest: Pulling from uifd/ui-for-docker
+Digest: sha256:fe371ff5a69549269b24073a5ab1244dd4c0b834cbadf244870572150b1cb749
+Status: Image is up to date for uifd/ui-for-docker:latest
+root@osboxes:~# docker run -d -p 9000:9000 --privileged -v /var/run/docker.sock:/var/run/docker.sock uifd/ui-for-docker
+9d4bae15aa903f9b98e4e49f8f3e896a34eb65cd2496860190ae427def40b97d
+root@osboxes:~# 
+
+
+
+

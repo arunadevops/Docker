@@ -1,0 +1,8 @@
+web:
+  ports:
+    - 80:80
+  environment:
+    PRODUCTION: "true"
+cache:
+  environment:
+    TTL: "500"

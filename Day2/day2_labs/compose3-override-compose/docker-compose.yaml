@@ -1,0 +1,9 @@
+web:
+  image: nginx
+  links:
+    - db
+    - cache
+db:
+  image: postgres
+cache:
+  image: redis

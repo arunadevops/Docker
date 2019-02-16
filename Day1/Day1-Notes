@@ -1,0 +1,88 @@
+**Important Links of Docker. 
+
+Before you begin 
+   -- Enable that your Machine is enabled with VT-x or AMD-v Virtualization in the BIOS. 
+   -- Hypervisor 
+        MAC OS --> VirtualBox , VMware Fusion or HyperKit. 
+        Linux --> VirtualBox or KVM. 
+        Windows --> Hyper V or virtual Box. 
+        Link to Oracle VM Virtual Box --> https://www.virtualbox.org/wiki/Downloads 
+
+Incase of any questions, Please create a ticket at support@edureka.co or call the help line to create an SR. 
+
+
+1. Configure a VM. 
+    https://www.osboxes.org/ubuntu/
+    Xeinal 16.04 --> https://sourceforge.net/projects/osboxes/files/v/vb/55-U-u/16.04/16.04.5/1604564.7z/download
+
+    -- Prereq script. 
+    #Commands 
+	sudo rm /var/lib/dpkg/lock
+	sudo dpkg --configure -a
+	sudo rm /var/lib/apt/lists/lock
+	sudo rm /var/cache/apt/archives/lock
+
+	sudo apt-get update
+	sudo apt update
+
+	apt-get install net-tools
+	apt-get install ssh
+	apt-get install 
+
+2. Docker Installation 
+    Link for Linux-ubuntu --> https://docs.docker.com/install/linux/docker-ce/ubuntu/
+    Link for Windows --> https://docs.docker.com/docker-for-windows/install/
+    Doocker toolbox for both windows and mac --> https://docs.docker.com/toolbox/toolbox_install_mac/ 
+
+    apt-get update
+    sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+    apt-get install docker.io 
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo apt-key fingerprint 0EBFCD88
+    sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+   sudo apt-get update
+   sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+
+**install specific versio of docker --> "sudo apt-get install docker-ce=<VERSION_STRING> docker-ce-cli=<VERSION_STRING> containerd.io"
+
+    docker -version 
+    docker run hello-world 
+    docker run docker/whalesay cowsay boo
+    
+3. Hub Docker. 
+    hub.docker.com 
+
+4. enterprise Docker (Docker as a service). 
+    cloud.docker.com 
+
+5. Docker Diagrams. 
+
+
+Other Links 
+
+1. CN - Cloud Native Computing Foundation. 
+	https://www.cncf.io/project/cni/
+
+  online lab (KATACODA) --> https://www.katacoda.com/courses/docker
+
+2. Link to OSBOXES 
+   -- osboxes.org 
+
+3. Visual Studio code  (IDE for Docker)
+   https://code.visualstudio.com/ 
+
+ 4. Official Docket git repo for labs --> https://github.com/docker/labs
+
+
+
