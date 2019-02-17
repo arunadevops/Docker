@@ -1,0 +1,118 @@
+
+Steps to register the aws 
+
+aws.amazon.com --> sign in and register. 
+You need to give your credit card details if you have 1, 
+amazon will charge 2 rs and credit back to your account. 
+
+
+Installation on AWS AMAZON Linux 2 
+
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
+
+#connect as root and 
+
+yum update -y
+amazon-linux-extras -y install docker
+service docker start
+usermod -a -G docker ec2-user
+ 
+#Above step requires log out and login 
+
+docker info 
+
+Create "Dockerfile" 
+==================
+
+FROM ubuntu:16.04
+
+# Install dependencies
+RUN apt-get update
+RUN apt-get -y install apache2
+
+# Install apache and write hello world message
+RUN echo 'Hello World!' > /var/www/html/index.html
+
+# Configure apache
+RUN echo '. /etc/apache2/envvars' > /root/run_apache.sh
+RUN echo 'mkdir -p /var/run/apache2' >> /root/run_apache.sh
+RUN echo 'mkdir -p /var/lock/apache2' >> /root/run_apache.sh
+RUN echo '/usr/sbin/apache2 -D FOREGROUND' >> /root/run_apache.sh
+RUN chmod 755 /root/run_apache.sh
+
+EXPOSE 80
+
+CMD /root/run_apache.sh
+
+
+**docker-machine in EC2 
+
+base=https://github.com/docker/machine/releases/download/v0.16.0 &&
+  curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+  sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+
+bydefault all amazon machines are having the default hypervizors called "amazonec2" hypervizor 
+
+
+export AWS_ACCESS_KEY="AKIAIGF3GAOWNTI2BAGA"
+export AWS_SECRET_KEY="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"
+export SUBNET_ID="subnet-e525708d"
+export VPC_ID="vpc-8c301ce4"
+
+docker-machine create --driver amazonec2 --amazonec2-access-key "AKIAIGF3GAOWNTI2BAGA" --amazonec2-secret-key "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" --amazonec2-region 'ap-south-1' --amazonec2-vpc-id vpc-8c301ce4  master
+docker-machine create --driver amazonec2 --amazonec2-access-key "AKIAIGF3GAOWNTI2BAGA" --amazonec2-secret-key "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" --amazonec2-region 'ap-south-1' --amazonec2-vpc-id vpc-8c301ce4  node1
+docker-machine create --driver amazonec2 --amazonec2-access-key "AKIAIGF3GAOWNTI2BAGA" --amazonec2-secret-key "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" --amazonec2-region 'ap-south-1' --amazonec2-vpc-id vpc-8c301ce4  node2
+
+docker run -d -p 8000:80 --name webserver kitematic/hello-world-nginx
+
+
+-------------------------- 
+
+
+**aws cli commands 
+
+aws --version                   
+aws ec2 create-key-pair --key-name edureka
+chmod 600 edureka.pem file 
+
+
+aws ec2 describe-key-pairs 
+aws iam list-access-keys        
+
+aws ec2 run-instances --image-id <ami-id>
+aws ec2 describe-instances
+
+ssh -i <path> ec2-user@unix_server_name 
+
+
+
+**ECR Demo 
+
+Reference :- https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
+
+
+Step1:- Create a cluster in ECS 
+
+aws ecr create-repository --repository-name hello-repository --no-include-email
+
+aws ecr get-login --region ap-south-1
+
+step2:- Write a simple Docker file 
+
+write a docker file 
+
+Dockerfile
+===========
+FROM ubuntu:latest
+RUN echo "helloworld"
+
+Step3:- Build and Tag your docker image. 
+
+docker build -t edureka:latest .
+docker tag edureka:latest <ECR->/edureka:latest
+docker push <ECR->/edureka:latest 
+
+Step 3:- Connect to any other ec2 instance and pull the docker image 
+and run the container 
+
+

@@ -1,0 +1,20 @@
+Day 4 - Part 1 
+
+Docker Compose File tags & Documentation -- https://docs.docker.com/compose/compose-file/
+
+
+**Module 4
+Docker Ports 
+    2376 - Docker Machine Port 
+    2377 - docker swarm master
+    6162 - cloud port. 
+
+    In any OS 
+    0-29999 --> static Ports (You can define these)
+    30000-49990 --> DYnamic Ports(Assigned Automatically)  , Spectrum of Application
+                    Represents the Microservice Model. 
+
+    K8S Dynamic Ports (30001-32766)
+    Docker Ports - 32767-33766 
+
+Docker Machine Ranges - 192.168.99.100-192.168.99.255
