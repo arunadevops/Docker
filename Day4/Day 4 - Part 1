@@ -2,6 +2,56 @@ Day 4 - Part 1
 
 Docker Compose File tags & Documentation -- https://docs.docker.com/compose/compose-file/
 
+**DOcker Networking. 
+
+docker network ls
+
+--network flag 
+
+Bridge - default n/w 
+         Micro services communication. 
+         layered architecture - 3 layer/4 layer architecture. 
+         container is on one subnet , host is anathor subnet
+        
+        More about bridge networks. 
+        default bridge network - containers can communicate with ip only  
+           docker run -itd --name=alpine1 alpine
+           docker run -itd --name=alpine2 alpine 
+           docker inspect network  <id>
+           docker attach alpine1 "ping alpine2 will fail, ping alpine2-ip will success"
+
+        custom bridge network - containers can communciate with name as well. 
+           docker network create --driver=bridge Customer1
+           docker run -itd --name=alpine3 --network=Customer1 alpine 
+           docker run -itd --name=alpine4 --network=Customer2 alpine 
+           docker attach alpine3 "ping alpine4 will work, ping alpine3-ip will also success"
+
+
+Host Network - Bypass default IP and Keep COntainer IP coming from the ROuter/Static 
+                cases :- DMZ Services use HOst Network. 
+                host and container are in same subnet 
+None - No Network to container , only internal apps. 
+
+veth pair --> docker bridge -- docker container communication ` 
+
+
+**Module 5 
+
+docker run -d --name nginx nginx 
+#Find an IP , inspect 
+docker inspect <cont-id>
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' nginx
+
+docker exec -it nginx ip add | grep global
+
+**exposing containers. 
+
+-P & -p Options 
+-P --> Automatic Dynamic Port 
+-p --> Port defined manually. 
+
+example:- docker run -d --name=edureka-nginx -P nginx 
+          docker run -d --name=edureka-nignx1 -p 8000:80 ngnix
 
 **Module 4
 Docker Ports 
@@ -18,3 +68,64 @@ Docker Ports
     Docker Ports - 32767-33766 
 
 Docker Machine Ranges - 192.168.99.100-192.168.99.255
+
+
+**docker ports 
+
+docker port edureka-nginx $CONTAINERPORT
+
+
+
+**linking Containers.  
+      --> Name to name communication b/w containers, 
+      --> Autoset env variables from one container to other [Env variables of one container are carried forward to other]
+
+docker run -d --name redis1 redis
+docker run -it --link redis1:redis --name redisclient1 busybox
+
+cat /etc/hosts
+ping redis 
+env              (you can see env variables for both)
+
+docker run -it --link redis1:redis --name client1 redis sh 
+ping redis 
+redis-cli -h redis 
+ > set myvar DOCKER
+ > get myvar 
+
+docker run -it --link redis1:redis --name client2 redis sh 
+
+
+**Network Namespace 
+
+Logical grouping of Network. 
+EVeryNetwork --> Routes , firewall rules, network devices. 
+
+
+docker run -it --network=none ubuntu
+docker run -it --network=host ubuntu
+docker run -itd --network=bridge ubuntu
+
+
+** Accessing Network Namespace on a container. 
+
+docker run --name box -itd busybox 
+pid ="$(docker inspect -f '{{state.Pid}}' "box")"
+echo $pid
+
+mkdir -p /var/run/nettns
+ln -s /proc/$pid/ns/net /var/run/netns/box
+
+ip netns
+
+ip netns exec box ip a 
+
+
+
+
+
+
+
+
+
+
