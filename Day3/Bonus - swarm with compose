@@ -1,0 +1,58 @@
+Bonus - swarm with compose 
+
+
+  --step-7
+
+	Create a directory newnet-comp
+
+Create docker-compose.yml
+===========================
+version: '3'
+services:
+  redis:
+    image: redis:alpine
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "50M"
+        reservations:
+          cpus: "0.25"
+          memory: "20M"
+      mode: replicated
+      replicas: 6
+
+
+   --step-8
+
+	#Prior deployment , you need to ensure you are in Leader machine 
+	docker-machine env mymach1
+	(run the last command)
+	docker stack deploy -c docker-compose.yml mydckswarmimg
+
+   --step-9
+   docker ps -a 
+	(Do you see any ?)
+
+	docker stack ps mydckswarmimg
+	To access these containers - you can visit the containers by docker exec -it and check for usage.
+
+   --step-10
+
+	#Now , Lets shut down one machine down and see how distribution happen
+
+	docker-machine ssh myv "docker swarm leave --force"
+
+	docker stack ps mydckswarmimg
+	# Refer the column of current state and 
+	# Do you see error description saying no image in Redis .. The recommendation is to have the image in each of the docker-machine so that it can run. Just pull the respective images in the docker-machine.
+
+	docker-machine ssh mymach2 "docker swarm leave --force"
+
+   --step-11
+
+	docker stack rm mydckswarmimg
+	docker stack ls
+	docker network prune
+
+	docker-machine env default

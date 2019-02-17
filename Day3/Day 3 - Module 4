@@ -1,0 +1,114 @@
+Day 3 - Module 4 
+
+dockerd --> https://docs.docker.com/engine/reference/commandline/dockerd/
+Links --> OCI https://www.opencontainers.org/
+
+configuration files 
+
+/etc/default/docker --> Plain text. (Not present, you need to create first time) 
+/etc/docker/daemon.json --> JSON Format config [usually you need to create first time]
+ 
+common usecases of dockerd
+-------------------
+1. Proxy Configurations. 
+2. Changing Docker Path - /var/lib/docker etc  
+
+
+#################################################################
+
+	
+1. How to change the Docker Path -->  "docker info" , "mkdir /scratch/docker "
+    $cd /etc/docker/
+	Create a file called daemon.json 
+	
+	[root@<HOST> docker]# pwd
+	/etc/docker
+	[root@<HOST> docker]# cat daemon.json
+	{
+	    "data-root": "/scratch/docker",
+	    "storage-driver": "overlay"
+	}
+	[root@<HOST> docker]#
+	
+	3. Restart the Docker 
+	
+	$systemctl restart docker.service
+	
+	4. Check "docker info"
+
+[root@<HOST> docker]# docker info | grep -i Root
+Docker Root Dir: /scratch/docker
+
+***** 
+
+Docker issue : connecting to Proxy
+ 
+1. go to /etc/systemd/system/docker.service.d
+2. Add these two lines and 
+[root@<HOST> docker.service.d]# cat http-proxy.conf
+# Enable http/s proxy, adjust to regional proxy accordingly
+[Service]
+Environment="HTTP_PROXY=<<PROXYHOST>>:<<PROXY-PORT>>/"
+Environment="HTTPS_PROXY=<<PROXYHOST>>:<<PROXY-PORT>>/"
+ 
+then 
+systemctl daemon-reload
+
+#####################################################################
+
+
+
+systemctl stop docker 
+sudo dockerd -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock & 
+
+docker -H tcp://127.0.0.1:2375 pull ubuntu 
+
+
+
+docker pull runseb/dockertls
+mkdir -p ~/certs;cd ~/certs
+docker run -ti -v $(pwd):/tmp/ca runseb/dockertls <hostname>
+
+pip install docker-py
+
+**nsenter 
+
+docker pull jpetazzo/nsenter 
+docker run -v /usr/local/bin:/target jetazzo/nsenter
+
+
+PID=$(docker inspect --format {{.State.Pid}} <container_name_or_idL>)
+
+
+
+docker -H tcp://<IP>:<port> images 
+docker images (if you configure your json)
+
+
+
+--connectivity issues.
+**existing file 
+docker run -it <image>:<tag-name> bash 
+env | grep proxy 
+
+curl -v <endpoint>  --> http error 400,500 
+
+**set your proxy 
+   a. docker file with Proxy config 
+         ENV http_proxy="<PROXY_URL>:<PORT>"
+         ENV https_proxy="<PROXY_URL>:<PORT>"
+   b. you can declare env variables in the compose yaml file. 
+
+App1:
+   image:<whichimage>
+   environment: 
+	  MYSQL_USERNAME: root
+	  MYSQL_ROOT_PASSWORD: edureka
+
+
+Image SIe 
+No of Layers. 
+
+Opensource scan tools (Docker Benchmark scan) --> scan your docker registry 
+Quality asssment 
+
