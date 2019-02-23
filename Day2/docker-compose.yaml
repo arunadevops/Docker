@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+      image: "kishore/wordpress"
+      ports:
+           - "80:5000"
+      environment:
+        - MYSQL_ROOT_PASSWORD=password           
+  mysql:
+    image: "mysql"
+    environment:
+            - WORDPRESS_DB_PASSWORD=password
+    volumes:
+            - /opt/data:/var/lib/mysql
