@@ -96,29 +96,8 @@ redis-cli -h redis
 docker run -it --link redis1:redis --name client2 redis sh 
 
 
-**Network Namespace 
-
-Logical grouping of Network. 
-EVeryNetwork --> Routes , firewall rules, network devices. 
 
 
-docker run -it --network=none ubuntu
-docker run -it --network=host ubuntu
-docker run -itd --network=bridge ubuntu
-
-
-** Accessing Network Namespace on a container. 
-
-docker run --name box -itd busybox 
-pid ="$(docker inspect -f '{{state.Pid}}' "box")"
-echo $pid
-
-mkdir -p /var/run/nettns
-ln -s /proc/$pid/ns/net /var/run/netns/box
-
-ip netns
-
-ip netns exec box ip a 
 
 
 
