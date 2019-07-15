@@ -1,4 +1,4 @@
-Dilman file 
+Dilman file updated
 Devops Course - 1 
 Duration = 25 days , 10 days of each docker,10 days k8s ,5 days Jenkins
 Courses :- Docker, Kubernetes for Absolute Beginers, Jenkins. 
